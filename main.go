@@ -6,11 +6,6 @@ import (
 )
 
 func main() {
-	//paswot := core.Paswot{}
-	//pass, _ := paswot.Generate(nil)
-	//println(pass)
-
-	//customPaswot := core.NewPaswot()
 	paswotRule := rule.NewPaswotRuleBuilder().
 		WithNoWhitespace(rule.NewNoWhitespaceRule()).
 		WithLength(rule.NewLengthRuleBuilder().
@@ -24,22 +19,65 @@ func main() {
 			WithMinSymbol(1).
 			Build()).
 		Build()
-	//res, err := customPaswot.Generate(paswotRule)
-	//if err != nil {
-	//	println(err.Error())
-	//}
-	//
-	//println(res)
-	//isValid, err := customPaswot.Validate(res, paswotRule)
-	//println("Is Valid: ", isValid)
-	//if err != nil {
-	//	println("Error: ", err.Error())
-	//}
 
-	pasWithSalt := core.NewPaswotWithSalt("abc123")
-	res, err := pasWithSalt.Generate(paswotRule)
+	testUnsaltedPassword(paswotRule)
+	testSaltedPassword(paswotRule)
+	testSaltedAndPepperPassword(paswotRule)
+}
+
+func testUnsaltedPassword(paswotRule *rule.PaswotRule) {
+	myPaswot := core.NewPaswot()
+	err := myPaswot.Generate(paswotRule)
 	if err != nil {
 		println(err.Error())
 	}
-	println(res)
+
+	println(myPaswot.Plain)
+	isValid, err := myPaswot.Validate(paswotRule)
+	println("Is Valid: ", isValid)
+	if err != nil {
+		println("Error: ", err.Error())
+	}
+
+	hashed, err := myPaswot.Hash()
+	println("Hashed: ", string(hashed))
+
+	isMatch := myPaswot.Match(string(hashed))
+	println(isMatch)
+}
+
+func testSaltedPassword(paswotRule *rule.PaswotRule) {
+	pasWithSalt := core.NewPaswotWithSalt("mySalt")
+	err := pasWithSalt.Generate(paswotRule)
+	if err != nil {
+		println(err.Error())
+	}
+	println("Plain:", pasWithSalt.Plain)
+
+	salted, err := pasWithSalt.Hash()
+	if err != nil {
+		println(err.Error())
+	}
+	println("Salted: ", string(salted))
+
+	isMatch := pasWithSalt.Match(string(salted))
+	println(isMatch)
+}
+
+func testSaltedAndPepperPassword(paswotRule *rule.PaswotRule) {
+	pasWithSaltAndPepper := core.NewPaswotWithSaltAndPepper("mySalt", "myPepper")
+	err := pasWithSaltAndPepper.Generate(paswotRule)
+	if err != nil {
+		println(err.Error())
+	}
+	println("Plain:", pasWithSaltAndPepper.Plain)
+	println("Salt:", pasWithSaltAndPepper.Salt)
+	println("Pepper:", pasWithSaltAndPepper.Pepper)
+	hashed, err := pasWithSaltAndPepper.Hash()
+	if err != nil {
+		println(err.Error())
+	}
+	println("Hashed: ", string(hashed))
+	isMatch := pasWithSaltAndPepper.Match(string(hashed))
+	println(isMatch)
 }
