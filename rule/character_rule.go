@@ -72,19 +72,43 @@ func (c *CharacterRule) ToString() string {
 }
 
 func (c *CharacterRule) Validate(password string) (bool, error) {
-	if c.MinUppercase > 0 && !strings.ContainsAny(password, string(AlphabetUpperCase)) {
+	uppercaseCount := 0
+	for _, char := range password {
+		if strings.ContainsRune(string(AlphabetUpperCase), char) {
+			uppercaseCount++
+		}
+	}
+	if uppercaseCount < c.MinUppercase {
 		return false, fmt.Errorf("password must contain at least %d uppercase characters", c.MinUppercase)
 	}
 
-	if c.MinLowercase > 0 && !strings.ContainsAny(password, string(AlphabetLowerCase)) {
+	lowercaseCount := 0
+	for _, char := range password {
+		if strings.ContainsRune(string(AlphabetLowerCase), char) {
+			lowercaseCount++
+		}
+	}
+	if lowercaseCount < c.MinLowercase {
 		return false, fmt.Errorf("password must contain at least %d lowercase characters", c.MinLowercase)
 	}
 
-	if c.MinNumber > 0 && !strings.ContainsAny(password, string(Number)) {
+	numberCount := 0
+	for _, char := range password {
+		if strings.ContainsRune(string(Number), char) {
+			numberCount++
+		}
+	}
+	if numberCount < c.MinNumber {
 		return false, fmt.Errorf("password must contain at least %d number characters", c.MinNumber)
 	}
 
-	if c.MinSymbol > 0 && !strings.ContainsAny(password, string(Symbol)) {
+	symbolCount := 0
+	for _, char := range password {
+		if strings.ContainsRune(string(Symbol), char) {
+			symbolCount++
+		}
+	}
+	if symbolCount < c.MinSymbol {
 		return false, fmt.Errorf("password must contain at least %d symbol characters", c.MinSymbol)
 	}
 

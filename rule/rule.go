@@ -11,6 +11,11 @@ type PaswotRule struct {
 }
 
 func (p *PaswotRule) IsValid() (bool, error) {
+	// Length Rule min violates max rule
+	if p.Length != nil && p.Length.Min > p.Length.Max {
+		return false, errors.New("length rule min violates max rule")
+	}
+	
 	if p.Character != nil {
 		if p.Length != nil {
 			// Character rule violates min length rule
