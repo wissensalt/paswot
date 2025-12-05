@@ -2,6 +2,7 @@
 
 [![Go Version](https://img.shields.io/badge/Go-1.24.5+-00ADD8?style=flat&logo=go)](https://golang.org/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/wissensalt/paswot/actions/workflows/ci.yaml/badge.svg)](https://github.com/wissensalt/paswot/actions/workflows/ci.yaml)
 
 **Paswot** is a comprehensive Go library for secure password generation, validation, hashing, and verification. It provides flexible rule-based password generation with support for salt and pepper for enhanced security.
 
