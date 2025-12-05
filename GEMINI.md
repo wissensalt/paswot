@@ -5,7 +5,7 @@ Paswot is a Go library for secure password generation, validation, and hashing. 
 
 ## Library Structure
 
-### Core Package (`core/`)
+### Core Package (`paswot/`)
 - **`paswot.go`**: Main password structures and generation logic
 - **`hasher.go`**: Password hashing functionality using bcrypt
 - **`matcher.go`**: Password verification/matching functionality
@@ -20,8 +20,8 @@ Paswot is a Go library for secure password generation, validation, and hashing. 
 
 ### Password Objects
 1. **`Paswot`**: Basic password object with plain text
-2. **`PaswotWithSalt`**: Extends Paswot with salt for enhanced security
-3. **`PaswotWithSaltAndPepper`**: Extends PaswotWithSalt with pepper
+2. **`WithSalt`**: Extends Paswot with salt for enhanced security
+3. **`WithSaltAndPepper`**: Extends PaswotWithSalt with pepper
 
 ### Rule Objects
 1. **`PaswotRule`**: Container for all password rules

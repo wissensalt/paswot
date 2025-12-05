@@ -220,7 +220,7 @@ The library provides sensible defaults through `DefaultRule()`:
 - bcrypt operations are CPU-intensive
 - Consider connection pooling for high-load scenarios
 - Cache rule validation results where appropriate
-- Plan capacity for authentication load
+- Plan capacity for an authentication load
 
 ### Maintenance Requirements
 - Regular security audits of dependencies

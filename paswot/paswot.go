@@ -1,4 +1,4 @@
-package core
+package paswot
 
 import (
 	"crypto/rand"
@@ -16,22 +16,22 @@ func NewPaswot() *Paswot {
 	return &Paswot{}
 }
 
-type PaswotWithSalt struct {
+type WithSalt struct {
 	*Paswot
 	Salt string
 }
 
-func NewPaswotWithSalt(salt string) *PaswotWithSalt {
-	return &PaswotWithSalt{Paswot: &Paswot{}, Salt: salt}
+func NewPaswotWithSalt(salt string) *WithSalt {
+	return &WithSalt{Paswot: &Paswot{}, Salt: salt}
 }
 
-type PaswotWithSaltAndPepper struct {
-	*PaswotWithSalt
+type WithSaltAndPepper struct {
+	*WithSalt
 	Pepper string
 }
 
-func NewPaswotWithSaltAndPepper(salt, pepper string) *PaswotWithSaltAndPepper {
-	return &PaswotWithSaltAndPepper{PaswotWithSalt: &PaswotWithSalt{Paswot: &Paswot{}, Salt: salt}, Pepper: pepper}
+func NewPaswotWithSaltAndPepper(salt, pepper string) *WithSaltAndPepper {
+	return &WithSaltAndPepper{WithSalt: &WithSalt{Paswot: &Paswot{}, Salt: salt}, Pepper: pepper}
 }
 
 func (p *Paswot) Generate(pasRule *rule.PaswotRule) error {

@@ -8,14 +8,14 @@
 ### Package Structure
 ```
 paswot/
-├── core/           # Core password functionality
+├── paswot/         # Password Core functionality
 ├── rule/           # Password rule definitions and validation
 ├── main.go         # Example usage and demonstration
 ├── go.mod          # Go module definition
 └── go.sum          # Dependency checksums
 ```
 
-### Core Package Responsibilities
+### Paswot Package Responsibilities
 - **Password Generation**: Cryptographically secure random password creation
 - **Password Hashing**: bcrypt-based password hashing with salt/pepper support
 - **Password Verification**: Secure password matching against hashes
@@ -46,13 +46,13 @@ type Paswot struct {
     Plain string
 }
 
-type PaswotWithSalt struct {
+type WithSalt struct {
     *Paswot
     Salt string
 }
 
-type PaswotWithSaltAndPepper struct {
-    *PaswotWithSalt
+type WithSaltAndPepper struct {
+    *WithSalt
     Pepper string
 }
 ```
@@ -71,12 +71,12 @@ type PaswotRule struct {
 #### Password Generation
 1. Validate input rules for consistency
 2. Generate required character types based on rules
-3. Fill remaining length with random characters from allowed sets
+3. Fill the remaining length with random characters from allowed sets
 4. Cryptographically shuffle the character array
 5. Convert to string
 
 #### Password Validation
-1. Check if password is non-empty
+1. Check if the password is non-empty
 2. Validate against no-whitespace rule (if set)
 3. Validate against length constraints
 4. Validate against character composition requirements

@@ -28,56 +28,49 @@ go get github.com/wissensalt/paswot
 package main
 
 import (
-    "fmt"
-    "github.com/wissensalt/paswot/core"
-    "github.com/wissensalt/paswot/rule"
+	"github.com/wissensalt/paswot/paswot"
+	"github.com/wissensalt/paswot/rule"
 )
 
 func main() {
-    // Create password rules
-    paswotRule := rule.NewPaswotRuleBuilder().
-        WithNoWhitespace(rule.NewNoWhitespaceRule()).
-        WithLength(rule.NewLengthRuleBuilder().
-            WithMin(8).
-            WithMax(16).
-            Build()).
-        WithCharacter(rule.NewCharacterRuleBuilder().
-            WithMinUppercase(1).
-            WithMinLowercase(1).
-            WithMinNumber(1).
-            WithMinSymbol(1).
-            Build()).
-        Build()
+	// Create password rule
+	paswotRule := rule.NewPaswotRuleBuilder().
+		WithNoWhitespace(rule.NewNoWhitespaceRule()).
+		WithLength(rule.NewLengthRuleBuilder().
+			WithMin(8).
+			WithMax(16).
+			Build()).
+		WithCharacter(rule.NewCharacterRuleBuilder().
+			WithMinUppercase(1).
+			WithMinLowercase(1).
+			WithMinNumber(1).
+			WithMinSymbol(1).
+			Build()).
+		Build()
+	
+	// Generate password with rule
+	myPaswot := paswot.NewPaswot()
+	err := myPaswot.Generate(paswotRule)
+	if err != nil {
+		println(err.Error())
+	}
 
-    // Generate password
-    paswot := core.NewPaswot()
-    err := paswot.Generate(paswotRule)
-    if err != nil {
-        fmt.Println("Error:", err)
-        return
-    }
+	println("Generated Password: ", myPaswot.Plain)
+	
+	// Validate password against rule
+	isValid, err := myPaswot.Validate(paswotRule)
+	println("Is Valid: ", isValid)
+	if err != nil {
+		println("Error: ", err.Error())
+	}
 
-    fmt.Println("Generated password:", paswot.Plain)
+	// Hash password with bcrypt
+	hashed, err := myPaswot.Hash()
+	println("Hashed Password: ", string(hashed))
 
-    // Validate password
-    isValid, err := paswot.Validate(paswotRule)
-    if err != nil {
-        fmt.Println("Validation error:", err)
-        return
-    }
-    fmt.Println("Is valid:", isValid)
-
-    // Hash password
-    hashed, err := paswot.Hash()
-    if err != nil {
-        fmt.Println("Hashing error:", err)
-        return
-    }
-    fmt.Println("Hashed password:", string(hashed))
-
-    // Verify password
-    isMatch := paswot.Match(string(hashed))
-    fmt.Println("Password matches:", isMatch)
+	// Verify password against hashed value
+	isMatch := myPaswot.Match(string(hashed))
+	println("Is Match", isMatch)
 }
 ```
 
@@ -98,7 +91,7 @@ type Paswot struct {
 Password object with salt support.
 
 ```go
-type PaswotWithSalt struct {
+type WithSalt struct {
     *Paswot
     Salt string // The salt value
 }
@@ -108,8 +101,8 @@ type PaswotWithSalt struct {
 Password object with both salt and pepper support.
 
 ```go
-type PaswotWithSaltAndPepper struct {
-    *PaswotWithSalt
+type WithSaltAndPepper struct {
+    *WithSalt
     Pepper string // The pepper value
 }
 ```
@@ -118,13 +111,13 @@ type PaswotWithSaltAndPepper struct {
 
 ```go
 // Create basic password object
-paswot := core.NewPaswot()
+paswot := paswot.NewPaswot()
 
 // Create password object with salt
-paswotWithSalt := core.NewPaswotWithSalt("mySalt")
+paswotWithSalt := paswot.NewPaswotWithSalt("mySalt")
 
 // Create password object with salt and pepper
-paswotWithSaltAndPepper := core.NewPaswotWithSaltAndPepper("mySalt", "myPepper")
+paswotWithSaltAndPepper := paswot.NewPaswotWithSaltAndPepper("mySalt", "myPepper")
 ```
 
 ### Password Rules
@@ -219,7 +212,7 @@ The library uses the following character sets for password generation:
 
 ```go
 // Use default rules (8-16 chars, 1 upper, 1 lower, 1 number, 1 symbol)
-paswot := core.NewPaswot()
+paswot := paswot.NewPaswot()
 err := paswot.Generate(rule.DefaultRule())
 if err != nil {
     // Handle error
@@ -244,14 +237,14 @@ customRule := rule.NewPaswotRuleBuilder().
     WithNoWhitespace(rule.NewNoWhitespaceRule()).
     Build()
 
-paswot := core.NewPaswot()
+paswot := paswot.NewPaswot()
 err := paswot.Generate(customRule)
 ```
 
 ### Password with Salt
 
 ```go
-saltedPaswot := core.NewPaswotWithSalt("userUniqueSalt")
+saltedPaswot := paswot.NewPaswotWithSalt("userUniqueSalt")
 err := saltedPaswot.Generate(paswotRule)
 if err != nil {
     // Handle error
@@ -270,7 +263,7 @@ isMatch := saltedPaswot.Match(string(hashed))
 ### Password with Salt and Pepper
 
 ```go
-saltAndPepperPaswot := core.NewPaswotWithSaltAndPepper("userSalt", "appPepper")
+saltAndPepperPaswot := paswot.NewPaswotWithSaltAndPepper("userSalt", "appPepper")
 err := saltAndPepperPaswot.Generate(paswotRule)
 if err != nil {
     // Handle error
@@ -291,7 +284,7 @@ isMatch := saltAndPepperPaswot.Match(string(hashed))
 ```go
 // Validate an existing password against rules
 password := "MyP@ssw0rd123"
-paswot := &core.Paswot{Plain: password}
+paswot := &paswot.Paswot{Plain: password}
 
 isValid, err := paswot.Validate(paswotRule)
 if err != nil {
@@ -311,7 +304,7 @@ The library provides detailed error messages for various scenarios:
 - **Hashing Errors**: When bcrypt hashing fails
 
 ```go
-paswot := core.NewPaswot()
+paswot := paswot.NewPaswot()
 err := paswot.Generate(paswotRule)
 if err != nil {
     switch {

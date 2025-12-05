@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/wissensalt/paswot/core"
+	"github.com/wissensalt/paswot/paswot"
 	"github.com/wissensalt/paswot/rule"
 )
 
@@ -26,13 +26,14 @@ func main() {
 }
 
 func testUnsaltedPassword(paswotRule *rule.PaswotRule) {
-	myPaswot := core.NewPaswot()
+	println("########## Testing Unsalted Password ##########")
+	myPaswot := paswot.NewPaswot()
 	err := myPaswot.Generate(paswotRule)
 	if err != nil {
 		println(err.Error())
 	}
 
-	println(myPaswot.Plain)
+	println("Generated Password: ", myPaswot.Plain)
 	isValid, err := myPaswot.Validate(paswotRule)
 	println("Is Valid: ", isValid)
 	if err != nil {
@@ -40,44 +41,58 @@ func testUnsaltedPassword(paswotRule *rule.PaswotRule) {
 	}
 
 	hashed, err := myPaswot.Hash()
-	println("Hashed: ", string(hashed))
+	println("Hashed Password: ", string(hashed))
 
 	isMatch := myPaswot.Match(string(hashed))
-	println(isMatch)
+	println("Is Match", isMatch)
 }
 
 func testSaltedPassword(paswotRule *rule.PaswotRule) {
-	pasWithSalt := core.NewPaswotWithSalt("mySalt")
+	println("########## Testing Salted Password ##########")
+	pasWithSalt := paswot.NewPaswotWithSalt("mySalt")
 	err := pasWithSalt.Generate(paswotRule)
 	if err != nil {
 		println(err.Error())
 	}
-	println("Plain:", pasWithSalt.Plain)
+
+	println("Generated Password:", pasWithSalt.Plain)
+	isValid, err := pasWithSalt.Validate(paswotRule)
+	println("Is Valid: ", isValid)
+	if err != nil {
+		println("Error: ", err.Error())
+	}
 
 	salted, err := pasWithSalt.Hash()
 	if err != nil {
 		println(err.Error())
 	}
-	println("Salted: ", string(salted))
+	println("Hashed Password (With Salt): ", string(salted))
 
 	isMatch := pasWithSalt.Match(string(salted))
-	println(isMatch)
+	println("Is Match", isMatch)
 }
 
 func testSaltedAndPepperPassword(paswotRule *rule.PaswotRule) {
-	pasWithSaltAndPepper := core.NewPaswotWithSaltAndPepper("mySalt", "myPepper")
+	println("########## Testing Salted and Peppered Password ##########")
+	pasWithSaltAndPepper := paswot.NewPaswotWithSaltAndPepper("mySalt", "myPepper")
 	err := pasWithSaltAndPepper.Generate(paswotRule)
 	if err != nil {
 		println(err.Error())
 	}
-	println("Plain:", pasWithSaltAndPepper.Plain)
-	println("Salt:", pasWithSaltAndPepper.Salt)
-	println("Pepper:", pasWithSaltAndPepper.Pepper)
-	hashed, err := pasWithSaltAndPepper.Hash()
+
+	println("Generated Password:", pasWithSaltAndPepper.Plain)
+	isValid, err := pasWithSaltAndPepper.Validate(paswotRule)
+	println("Is Valid: ", isValid)
+	if err != nil {
+		println("Error: ", err.Error())
+	}
+
+	salted, err := pasWithSaltAndPepper.Hash()
 	if err != nil {
 		println(err.Error())
 	}
-	println("Hashed: ", string(hashed))
-	isMatch := pasWithSaltAndPepper.Match(string(hashed))
-	println(isMatch)
+	println("Hashed Password (With Salt and Pepper): ", string(salted))
+
+	isMatch := pasWithSaltAndPepper.Match(string(salted))
+	println("Is Match", isMatch)
 }

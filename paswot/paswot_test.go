@@ -1,4 +1,4 @@
-package core
+package paswot
 
 import (
 	"strings"
@@ -38,8 +38,8 @@ func TestNewPaswotWithSaltAndPepper(t *testing.T) {
 	if p == nil {
 		t.Fatal("NewPaswotWithSaltAndPepper() should not return nil")
 	}
-	if p.PaswotWithSalt == nil {
-		t.Fatal("NewPaswotWithSaltAndPepper().PaswotWithSalt should not be nil")
+	if p.WithSalt == nil {
+		t.Fatal("NewPaswotWithSaltAndPepper().WithSalt should not be nil")
 	}
 	if p.Salt != salt {
 		t.Errorf("NewPaswotWithSaltAndPepper().Salt should be '%s', got '%s'", salt, p.Salt)

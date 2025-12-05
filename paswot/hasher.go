@@ -1,10 +1,10 @@
-package core
+package paswot
 
 import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-type PaswotHasher interface {
+type Hasher interface {
 	Hash() ([]byte, error)
 }
 
@@ -12,10 +12,10 @@ func (p *Paswot) Hash() ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(p.Plain), bcrypt.DefaultCost)
 }
 
-func (p *PaswotWithSalt) Hash() ([]byte, error) {
+func (p *WithSalt) Hash() ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(p.Plain+p.Salt), bcrypt.DefaultCost)
 }
 
-func (p *PaswotWithSaltAndPepper) Hash() ([]byte, error) {
+func (p *WithSaltAndPepper) Hash() ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(p.Plain+p.Salt+p.Pepper), bcrypt.DefaultCost)
 }

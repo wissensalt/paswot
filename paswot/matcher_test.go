@@ -1,4 +1,4 @@
-package core
+package paswot
 
 import (
 	"testing"
@@ -27,7 +27,7 @@ func TestPaswot_Match(t *testing.T) {
 }
 
 func TestPaswotWithSalt_Match(t *testing.T) {
-	p := &PaswotWithSalt{
+	p := &WithSalt{
 		Paswot: &Paswot{
 			Plain: "password",
 		},
@@ -52,8 +52,8 @@ func TestPaswotWithSalt_Match(t *testing.T) {
 }
 
 func TestPaswotWithSaltAndPepper_Match(t *testing.T) {
-	p := &PaswotWithSaltAndPepper{
-		PaswotWithSalt: &PaswotWithSalt{
+	p := &WithSaltAndPepper{
+		WithSalt: &WithSalt{
 			Paswot: &Paswot{
 				Plain: "password",
 			},
